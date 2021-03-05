@@ -6,11 +6,11 @@ import org.jbox2d.dynamics.*;
 /*------------------------------------------------------------------- */
 /*----------------------- Editable parameters ----------------------- */
 
-boolean drawFloor = true;       // visualise floor
+boolean drawFloor = true;         // visualise floor
 boolean debug = false;            // various debug visualisations
-boolean mouseControll = true;    // controll gravity direction with mouse
+boolean mouseControll = true;     // controll gravity direction with mouse
 
-float floorBoundaryAngle = 110;  // how wide the floor is, measured as an angle from a point in the center. This can be animated at runtime.
+float floorBoundaryAngle = 110;   // how wide the floor is, measured as an angle from a point in the center. This can be animated at runtime.
 
 // second number parameters
 
@@ -44,7 +44,7 @@ int lastMillis = 0;
 PFont numberFont;
 int previous_purge;
 
-// box2d collision masks
+// box2d collision masks -- used to prevent current hour and minute from falling off the world until they are no longer needed
 int edgeMask = 0x0004;
 int floorMask = 0x0001;
 
