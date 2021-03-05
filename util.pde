@@ -1,6 +1,3 @@
-
-
-
 void vLine(PVector p1, PVector p2) {
   line(p1.x, p1.y, p2.x, p2.y);
 }
@@ -17,4 +14,8 @@ void magLine(PVector pos, PVector dir, float mag) {
   translate(pos.x, pos.y);
   line(0, 0, dir.x*mag, dir.y*mag);
   popMatrix();
+}
+
+float vDist(PVector p1, PVector p2) {
+  return dist(p1.x, p1.y, p2.x, p2.y);
 }

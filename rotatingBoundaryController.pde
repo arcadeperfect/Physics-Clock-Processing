@@ -106,8 +106,8 @@ class RotatingBoundryController {
       stroke(0, 255, 0);
       vPoint(target);
 
-      ray1.draw();
-      ray2.draw();
+      ray1.drawRay();
+      ray2.drawRay();
 
       for (PVector p : boundaryPoints) {
         if (debug) {
@@ -123,23 +123,9 @@ class RotatingBoundryController {
     if (!debug && drawFloor) {
       bounds.draw();
     }
-
-    ///// DRAW TEMP RAY /////
   }
 
-  void drawTempRay() {
-    tempRay.draw();
-    strokeWeight(10);
-    stroke(0, 0, 255);
-    vPoint(tempRay.pos);
-    stroke(0, 0, 255);
-    vPoint(tempRay.checkEdges());
-  }
 
-  void addTempRay(PVector tempSource) {
-
-    tempRay = new Ray(tempSource, down, false);
-  }
 
 
   // resursive search function
@@ -268,7 +254,7 @@ class RotatingBoundryController {
       }
       PVector c = isIntersecting(edges.south, pos, dir);
       if (c != null) {
-    
+
         if (h) {
           edges.south.draw();
         }
@@ -278,7 +264,7 @@ class RotatingBoundryController {
       }
       PVector d = isIntersecting(edges.west, pos, dir);
       if (d != null) {
-      
+
         if (h) {
           edges.west.draw();
         }
@@ -289,17 +275,22 @@ class RotatingBoundryController {
       return null;
     }
 
-    void draw() {
+    void drawRay() {
       strokeWeight(1);
       if (!h) {
         stroke(0, 255, 0);
       } else {
         stroke(255);
       }
-      magLine(pos, dir, 200);
+      float lineMag = 200;
+      magLine(pos, dir, lineMag);
 
-      text(dir.x, width/3, height/3);
-      text(dir.y, width-width/3, height/3);
+      textSize(10);
+      PVector textPos = PVector.add(pos, PVector.mult(dir, lineMag));
+
+      text(dir.x, textPos.x-20, textPos.y);
+      text(dir.y, textPos.x+20, textPos.y);
+
     }
 
     void setAngle(PVector a) {
@@ -307,6 +298,7 @@ class RotatingBoundryController {
       dir = a;
     }
   }
+
   PVector isIntersecting(Edge wl, PVector pos, PVector dir) {
 
     // test if a ray defined by a point and a direction intersects with an edge
@@ -421,37 +413,6 @@ class RotatingBoundryController {
       east.draw();
       south.draw();
       west.draw();
-    }
-  }
-}
-
-class LineBoundaryList {
-  ArrayList<LineBoundary> bounds = new ArrayList<LineBoundary>();
-  LineBoundaryList() {
-  }
-
-  void add(LineBoundary l) {
-    bounds.add(l);
-  }
-
-  void remove(LineBoundary l) {
-    l.killBody();
-    bounds.remove(l);
-  }
-
-  void clear() {
-    for (LineBoundary l : bounds) {
-      l.killBody();
-      ;
-    }
-    bounds.clear();
-  }
-
-  void draw() {
-    for (LineBoundary l : bounds) {
-      strokeWeight(2);
-      fill(255);
-      l.draw();
     }
   }
 }

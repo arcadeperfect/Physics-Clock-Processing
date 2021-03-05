@@ -1,8 +1,9 @@
-
+// A lot of this is adapted from Dan Shiffman's examples
 
 class LineBoundary {
 
-  // Boundary that can be defined with 2 verts and a width
+  // Box2D collider that can be defined with 2 verts and a width
+  // Wrapper around Box2D box collider, essentially a very long thin box
   // Can also be moved
 
   Body bdy;
@@ -118,10 +119,4 @@ class LineBoundary {
     rect(0, 0, w, h);
     popMatrix();
   }
-}
-
-
-
-float vDist(PVector p1, PVector p2) {
-  return dist(p1.x, p1.y, p2.x, p2.y);
 }

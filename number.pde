@@ -3,7 +3,7 @@
 // Spring 2010
 // Box2DProcessing example
 
-// A rectangular box
+
 class Number {
 
   // We need to keep track of a Body and a width and height

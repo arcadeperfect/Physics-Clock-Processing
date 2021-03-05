@@ -6,16 +6,15 @@ import org.jbox2d.dynamics.*;
 /*------------------------------------------------------------------- */
 /*----------------------- Editable parameters ----------------------- */
 
-boolean fullscrn = false;        // fullscreen mode
-boolean drawFloor = false;       // visualise floor
-boolean debug = true;            // various debug visualisations
-boolean mouseControll = true;   // controll gravity direction with mouse
+boolean drawFloor = true;       // visualise floor
+boolean debug = false;            // various debug visualisations
+boolean mouseControll = true;    // controll gravity direction with mouse
 
-float floorBoundaryAngle = 110;  // how wide the floor is, basically
+float floorBoundaryAngle = 110;  // how wide the floor is, measured as an angle from a point in the center. This can be animated at runtime.
 
 // second number parameters
 
-float secondSize = 50*1;
+float secondSize = 50;
 float second_density = 1;
 float second_friction = 0.3;
 float second_restitution = 0.5;
@@ -29,17 +28,18 @@ float minute_restitution = 0.4;
 
 // hour number parameters
 
-float hourSize = 200*1;
+float hourSize = 200;
 float hour_density = 52;
 float hour_friction = 0.3;
 float hour_restitution = 0.3;
 
+// gravity multiplyer
+
+float gravMult = 10;
+
 /*------------------------------------------------------------------- */
 /*------------------------------------------------------------------- */
 
-
-
-float gravMult;
 int lastMillis = 0;
 PFont numberFont;
 int previous_purge;
@@ -48,15 +48,12 @@ int previous_purge;
 int edgeMask = 0x0004;
 int floorMask = 0x0001;
 
-
 // A reference to our box2d world
 Box2DProcessing box2d;
 
-
 RotatingBoundryController rot_bounds;
-PVector down = new PVector(0, 1);
+PVector down = new PVector();
 ArrayList<Number> numbers;
-
 
 int hour;
 int previous_hour;
@@ -71,6 +68,7 @@ boolean init;
 
 int deathCount = 0;
 int lifeCount = 0;
+
 
 void setup() {
 
@@ -90,7 +88,7 @@ void setup() {
   box2d = new Box2DProcessing(this);
   box2d.createWorld();
 
-  rot_bounds = new RotatingBoundryController();
+  rot_bounds = new RotatingBoundryController();   // controls the floor
 
   // Create ArrayLists	
   numbers = new ArrayList<Number>();
@@ -101,7 +99,7 @@ void setup() {
 
   init = true; // so we can know when we're running the first time later on
 
-  // static edge boundaries
+  // static edge boundaries - used for detecting intersections
   LineBoundary b1 = new LineBoundary(new PVector(0, 0), new PVector(width, 0), 0);
   LineBoundary b2 = new LineBoundary(new PVector(width, 0), new PVector(width, height), 0);
   LineBoundary b3 = new LineBoundary(new PVector(width, height), new PVector(0, height), 0);
@@ -117,20 +115,32 @@ void draw() {
   box2d.step(1.0/60, 8, 3);
   //box2d.step();
 
-  // set gravity from mouse pos
+
+/*------------------------------------------------------------------- */
+/*----------------------- Gravity controller ------------------------ */
+
+  // for debugging, you can control it with mouse position
+
   if (mouseControll) {
     PVector mouseVector = PVector.fromAngle(map(mouseX, 0, width, 0, TWO_PI));
     down = mouseVector;
   } else {
-    down = new PVector(0, 1); // otherwise default to screen down
+    
+  // Otherwise set this vector with whatever input source you want, ie. IMU or knob
+  
+    down = new PVector(0, 1); // default to screen down
   }
 
-  gravMult = 10;
+/*------------------------------------------------------------------- */
+/*------------------------------------------------------------------- */
+
+
   box2d.setGravity(down.x*gravMult, -down.y*gravMult);
   rot_bounds.update(down);  // update rotatingBoundaryController, to update down vector also to draw bounds if desired (todo refactor)
 
 
   // init with hour and minute (runs only on first loop)
+  
   if (init) {  
     Number s = new Number(width/2-(width/4), 30, "second");
     numbers.add(s);
@@ -140,13 +150,10 @@ void draw() {
     numbers.add(m);
     init = false;
 
-    rot_bounds.addTempRay(new PVector(random(width), random(height)));
   }
 
-  rot_bounds.drawTempRay();
 
-
-  // Create seconds
+  // Create second instance once per second
   if (second() != previous_second) {
     //if(millis() - lastMillis > 250){
     Number p = new Number(width/2, 30, "second");
@@ -170,7 +177,6 @@ void draw() {
   }
 
 
-
   // Display all the numbers
   for (Number b : numbers) {
     b.display();
@@ -178,7 +184,7 @@ void draw() {
 
 
   // Boxes that leave the screen, we delete them
-  // (note they have to be deleted from both the box2d world and our list
+  // (note they have to be deleted from both the box2d world and our list)
   for (int i = numbers.size()-1; i >= 0; i--) {
     Number b = numbers.get(i);
     if (b.done()) {
@@ -186,10 +192,12 @@ void draw() {
     }
   }
 
-
-  textSize(10);
-  fill(255);
-  text(lifeCount, 5, 20);
-  text(deathCount, 5, 40);
-  text(numbers.size(), 5, 60);
+  // Display some numbers for debugging
+  if (debug) {
+    textSize(10);
+    fill(255);
+    text(lifeCount, 5, 20);
+    text(deathCount, 5, 40);
+    text(numbers.size(), 5, 60);
+  }
 }
