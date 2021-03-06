@@ -1,3 +1,22 @@
+/*
+
+© 2021 Alex Harding
+
+Physics Clock by Alex Harding
+
+www.alexharding.io
+https://hackaday.io/project/176037-concrete-physics-clock
+https://github.com/arcadeperfect/phys-clock
+
+Originally based on Dan Shiffman's "boxes" example for his Box2D wrapper for processing:
+https://github.com/shiffman/Box2D-for-Processing/tree/master/Box2D-for-Processing/dist/box2d_processing/examples/Boxes
+
+*/
+
+// Class to manage the "floor", allowing it to rotate around the edges of the screen
+// according to the direction of gravity, so there's always a floor for thing to land on
+// regardless of orientation
+
 class RotatingBoundryController {
   ArrayList<PVector> boundaryPoints = new ArrayList<PVector>();
 
@@ -9,20 +28,13 @@ class RotatingBoundryController {
   PVector target;
   PVector search = new PVector();
 
-  PVector north = new PVector(0, -1);
-  PVector east = new PVector(1, 0);
-  PVector south = new PVector(0, 1);
-  PVector west = new PVector(-1, 0);
-
-  float a1 = 45+90;
-
-  //float a1 = 0;
+  final PVector north = new PVector(0, -1);
+  final PVector east = new PVector(1, 0);
+  final PVector south = new PVector(0, 1);
+  final PVector west = new PVector(-1, 0);
 
   Ray ray1;
   Ray ray2;
-  Ray tempRay;
-
-
 
   RotatingBoundryController() {  
 
@@ -32,6 +44,7 @@ class RotatingBoundryController {
     ray1 = new Ray(center, PVector.fromAngle(0), true);
     ray2 = new Ray(center, PVector.fromAngle(HALF_PI), false);
     println("init rotating boundary controller");
+    
   }
 
   void update(PVector down) {
@@ -40,7 +53,6 @@ class RotatingBoundryController {
 
     stroke(0);
     strokeWeight(1);
-
 
     float tempFOV = radians(floorBoundaryAngle/2);
 
@@ -124,8 +136,6 @@ class RotatingBoundryController {
       bounds.draw();
     }
   }
-
-
 
 
   // resursive search function

@@ -1,3 +1,19 @@
+/*
+
+© 2021 Alex Harding
+
+Physics Clock by Alex Harding
+
+www.alexharding.io
+https://hackaday.io/project/176037-concrete-physics-clock
+https://github.com/arcadeperfect/phys-clock
+
+Originally based on Dan Shiffman's "boxes" example for his Box2D wrapper for processing:
+https://github.com/shiffman/Box2D-for-Processing/tree/master/Box2D-for-Processing/dist/box2d_processing/examples/Boxes
+
+*/
+
+
 import shiffman.box2d.*;
 import org.jbox2d.collision.shapes.*;
 import org.jbox2d.common.*;

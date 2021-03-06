@@ -1,10 +1,27 @@
+/*
+
+© 2021 Alex Harding
+
+Physics Clock by Alex Harding
+
+www.alexharding.io
+https://hackaday.io/project/176037-concrete-physics-clock
+https://github.com/arcadeperfect/phys-clock
+
+Originally based on Dan Shiffman's "boxes" example for his Box2D wrapper for processing:
+https://github.com/shiffman/Box2D-for-Processing/tree/master/Box2D-for-Processing/dist/box2d_processing/examples/Boxes
+
+*/
+
 // A lot of this is adapted from Dan Shiffman's examples
+
+// Box2D collider that can be defined with 2 verts and a width, ie like a processing line
+// Wrapper around Box2D box collider, essentially a very long thin box
+// Can also be moved
 
 class LineBoundary {
 
-  // Box2D collider that can be defined with 2 verts and a width
-  // Wrapper around Box2D box collider, essentially a very long thin box
-  // Can also be moved
+
 
   Body bdy;
   BodyDef bdef;
@@ -16,11 +33,11 @@ class LineBoundary {
   PVector pos;
   PVector p1;
   PVector p2;
-  
+
   int filter_group_index;
 
   LineBoundary(PVector _p1, PVector _p2, int _filter_group_index) {
-    
+
     filter_group_index = _filter_group_index;
 
     p1 = _p1;

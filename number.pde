@@ -1,8 +1,22 @@
-// The Nature of Code
-// <http://www.shiffman.net/teaching/nature>
-// Spring 2010
-// Box2DProcessing example
+/*
 
+© 2021 Alex Harding
+
+Physics Clock by Alex Harding
+
+www.alexharding.io
+https://hackaday.io/project/176037-concrete-physics-clock
+https://github.com/arcadeperfect/phys-clock
+
+Originally based on Dan Shiffman's "boxes" example for his Box2D wrapper for processing:
+https://github.com/shiffman/Box2D-for-Processing/tree/master/Box2D-for-Processing/dist/box2d_processing/examples/Boxes
+
+*/
+
+
+
+// Class to handle the functionality of the falling numbers
+// Originally derrived from Dans Shiffman's example
 
 class Number {
 

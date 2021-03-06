@@ -1,3 +1,20 @@
+/*
+
+© 2021 Alex Harding
+
+Physics Clock by Alex Harding
+
+www.alexharding.io
+https://hackaday.io/project/176037-concrete-physics-clock
+https://github.com/arcadeperfect/phys-clock
+
+Originally based on Dan Shiffman's "boxes" example for his Box2D wrapper for processing:
+https://github.com/shiffman/Box2D-for-Processing/tree/master/Box2D-for-Processing/dist/box2d_processing/examples/Boxes
+
+*/
+
+// Utility functions
+
 void vLine(PVector p1, PVector p2) {
   line(p1.x, p1.y, p2.x, p2.y);
 }
