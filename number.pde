@@ -1,12 +1,12 @@
 /*
 
-© 2021 Alex Harding
+© 2020 Alex Harding
 
 Physics Clock by Alex Harding
 
 www.alexharding.io
 https://hackaday.io/project/176037-concrete-physics-clock
-https://github.com/arcadeperfect/phys-clock
+https://github.com/arcadeperfect/Physics-Clock-Processing
 
 Originally based on Dan Shiffman's "boxes" example for his Box2D wrapper for processing:
 https://github.com/shiffman/Box2D-for-Processing/tree/master/Box2D-for-Processing/dist/box2d_processing/examples/Boxes
@@ -153,8 +153,6 @@ class Number {
     rotate(-a);
     noFill();
     stroke(200);
-    //rectMode(CENTER);
-    //rect(0, 0, body_w, body_h);
     translate(0, -yOff);
     fill(175);
     textFont(numberFont);

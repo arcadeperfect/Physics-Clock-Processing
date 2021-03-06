@@ -1,12 +1,12 @@
 /*
 
-© 2021 Alex Harding
+© 2020 Alex Harding
 
 Physics Clock by Alex Harding
 
 www.alexharding.io
 https://hackaday.io/project/176037-concrete-physics-clock
-https://github.com/arcadeperfect/phys-clock
+https://github.com/arcadeperfect/Physics-Clock-Processing
 
 Originally based on Dan Shiffman's "boxes" example for his Box2D wrapper for processing:
 https://github.com/shiffman/Box2D-for-Processing/tree/master/Box2D-for-Processing/dist/box2d_processing/examples/Boxes
@@ -24,7 +24,7 @@ import org.jbox2d.dynamics.*;
 
 boolean drawFloor = true;         // visualise floor
 boolean debug = false;            // various debug visualisations
-boolean mouseControll = true;     // controll gravity direction with mouse
+boolean mouseControll = false;     // controll gravity direction with mouse
 
 float floorBoundaryAngle = 110;   // how wide the floor is, measured as an angle from a point in the center. This can be animated at runtime.
 
