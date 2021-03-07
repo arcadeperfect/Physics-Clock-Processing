@@ -53,6 +53,11 @@ float hour_restitution = 0.3;
 
 float gravMult = 10;
 
+boolean killAfterLifetime = true;   // Delete number after given lifetime has expired (max life set in number class)
+
+boolean screenSaver = true;        // Numbers will be deleted if they don't move for a long time to prevent screen burnin 
+int screenSaverTime = 60;           // Time in minutes to wait before deleting number
+
 /*------------------------------------------------------------------- */
 /*------------------------------------------------------------------- */
 
@@ -88,8 +93,8 @@ int lifeCount = 0;
 
 void setup() {
 
-  fullScreen(P3D);
-  //size(800, 800, P3D);
+  //fullScreen(P3D);
+  size(800, 800, P3D);
 
   numberFont = createFont("Consolas", 500);   // use any font but the collision boxes for the numbers might not line up
 
@@ -203,6 +208,7 @@ void draw() {
   // (note they have to be deleted from both the box2d world and our list)
   for (int i = numbers.size()-1; i >= 0; i--) {
     Number b = numbers.get(i);
+
     if (b.done()) {
       numbers.remove(i);
     }

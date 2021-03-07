@@ -38,7 +38,7 @@ class Number {
   float previousX;  // check for movement, delete if no movement for too long
   float previousY;
   int lastMoved;
-  int stillLife = 1000*60*60;
+  int stillLife = 1000*60*screenSaverTime;
 
   int secCol;
   String kind;
@@ -76,7 +76,7 @@ class Number {
       density = second_density;
       friction = second_friction;
       restitution = second_restitution;
-      totalLife = 1000*60*60; //seconds last one hour
+      totalLife = 1000*60*60; //seconds last 1 hour
       break;
 
       case("minute"):
@@ -86,7 +86,7 @@ class Number {
       density = minute_density;
       friction = minute_friction;
       restitution = minute_restitution;
-      totalLife = 1000*60*60; //seconds last one hour
+      totalLife = 1000*60*60*3; //minutes last 3 hours
       filter_mask_bits = edgeMask;
       break;
 
@@ -97,7 +97,7 @@ class Number {
       thisTextColor = color(0, 255, 255);
       density = hour_density;
       friction = hour_friction;
-      totalLife = 1000*60*60; //seconds last one hour
+      totalLife = 1000*60*60*5; //hours last 5 hours
       restitution = hour_restitution;
       filter_mask_bits = edgeMask;
       break;
@@ -112,6 +112,8 @@ class Number {
   // This function removes the particle from the box2d world
   void killBody() {
     box2d.destroyBody(bdy);
+    deathCount ++;
+    println("death", deathCount);
   }
 
   // Is the particle ready for deletion?
@@ -120,16 +122,20 @@ class Number {
     Vec2 pos = box2d.getBodyPixelCoord(bdy);
 
     // Is it off the bottom of the screen? // or off to the side?
-    //println(millis()-lastMoved);
+
     if (pos.y > height+body_w*body_h || pos.x < 0-body_w*body_h || pos.x > width+body_w*body_h) {
       killBody();
-      deathCount ++;
-      println("death", deathCount);
       return true;
-    } else if (millis() - initMillis > totalLife || millis() - lastMoved > stillLife) {
+
+      // Had number moved within screensaver duration, and is screensaver set to true?
+    } else if (screenSaver && millis() - lastMoved > stillLife) {
       killBody();
-      deathCount ++;
-      println("death", deathCount);
+      return true;
+
+      // Has number reached max life and is killAfterLifetime set to true?
+    } else if (killAfterLifetime && millis() - initMillis > totalLife) {
+      println(millis() - initMillis);
+      killBody();
       return true;
     }
     return false;
@@ -166,7 +172,7 @@ class Number {
     // check for movement (for screensaver reasons)
     float thresh = 0.1;
     if (abs(previousX - pos.x) > thresh || abs(previousY - pos.y) > thresh) {
-      //println("moved");
+
       lastMoved = millis();
     }
     previousX = pos.x;
@@ -182,9 +188,6 @@ class Number {
     float box2dW = box2d.scalarPixelsToWorld(w_/2);
     float box2dH = box2d.scalarPixelsToWorld(h_/2);
     sd.setAsBox(box2dW, box2dH);
-
-
-
 
     // Define a fixture
     FixtureDef fd = new FixtureDef();
@@ -258,20 +261,20 @@ class Number {
       case("second"):
       fill(255);
       break;
-      
-      
+
+
       // minute colours
 
       case("minute"):
       colorMode(HSB);
-      
+
       // remap age in milliseconds to a descending saturation value
       // 60000 milis = 1 minute
       // so it is map(age-in-millis, start age, end age, start saturation, end saturation)
       // this will fade from start saturation to end saturation over the specified number of millis
-      
-      sat = map(millis()-initMillis, 0, 60000*10, 150, 0); // remap across 4 minutes
-      
+
+      sat = map(millis()-initMillis, 0, 60000*6, 150, 0); // remap across 4 minutes
+
       sat = constrain(sat, 0, 255);
 
       fill(210, sat, 255);
@@ -285,24 +288,22 @@ class Number {
       case("hour"):
 
       colorMode(HSB);
-      
+
       // remap age in milliseconds to a descending saturation value
       // 60000 milis = 1 minute
       // so it is map(age-in-millis, start age, end age, start saturation, end saturation)
       // this will fade from start saturation to end saturation over the specified number of millis
-      
+
       sat = map(millis()-initMillis, 0, 60000*60*4, 200, 0); // remap across 60*4 minutes   
-      
+
       sat = constrain(sat, 0, 255);
-    
-      print("sat ");
-      println(sat);
+
+
       fill(100, sat, 255);
       noStroke();
       colorMode(RGB);
 
       break;
-
     }
   }
 }
