@@ -4,7 +4,7 @@
 
 **Physics Clock**
 
-This is the prototype code the project linked below is based on. Future versions of the project will run on a different platform, so this code will not be developed.
+This is the prototype code the project linked below is based on. It runs in Processing. Future versions of the project will run on a different platform, so this code will not be developed.
 
 Set "mouseControll" to true to enable controll of gravity vector with mouse.  
 Set "debug" to true for various visualisations to show what's going on.  
@@ -23,6 +23,10 @@ https://github.com/arcadeperfect/Physics-Clock-Processing
 
 ---
 
+Processing  
+https://processing.org/  
+
+---
 
 Originally based on Dan Shiffman's "boxes" example for his Box2D wrapper for processing:  
 https://github.com/shiffman/Box2D-for-Processing/tree/master/Box2D-for-Processing/dist/box2d_processing/examples/Boxes
