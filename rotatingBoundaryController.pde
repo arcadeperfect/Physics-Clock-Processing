@@ -13,9 +13,6 @@ https://github.com/shiffman/Box2D-for-Processing/tree/master/Box2D-for-Processin
 
 */
 
-// Class to manage the "floor", allowing it to rotate around the edges of the screen
-// according to the direction of gravity, so there's always a floor for thing to land on
-// regardless of orientation
 
 class RotatingBoundryController {
   ArrayList<PVector> boundaryPoints = new ArrayList<PVector>();
@@ -23,15 +20,15 @@ class RotatingBoundryController {
   EdgeController edges;
   LineBoundaryList bounds;
 
-  PVector center;
-  PVector source;
-  PVector target;
-  PVector search = new PVector();
+  PVector cnt;
+  PVector src;
+  PVector trg;
+  PVector sch = new PVector();
 
-  final PVector north = new PVector(0, -1);
-  final PVector east = new PVector(1, 0);
-  final PVector south = new PVector(0, 1);
-  final PVector west = new PVector(-1, 0);
+  final PVector n = new PVector(0, -1);
+  final PVector e = new PVector(1, 0);
+  final PVector s = new PVector(0, 1);
+  final PVector w = new PVector(-1, 0);
 
   Ray ray1;
   Ray ray2;
@@ -39,10 +36,10 @@ class RotatingBoundryController {
   RotatingBoundryController() {  
 
     bounds = new LineBoundaryList();
-    center = new PVector(width/2, height/2);
+    cnt = new PVector(width/2, height/2);
     edges = new EdgeController();
-    ray1 = new Ray(center, PVector.fromAngle(0), true);
-    ray2 = new Ray(center, PVector.fromAngle(HALF_PI), false);
+    ray1 = new Ray(cnt, PVector.fromAngle(0), true);
+    ray2 = new Ray(cnt, PVector.fromAngle(HALF_PI), false);
     println("init rotating boundary controller");
     
   }
@@ -59,42 +56,29 @@ class RotatingBoundryController {
     ray1.setAngle(new PVector(down.x, down.y).rotate(-tempFOV));
     ray2.setAngle(new PVector(down.x, down.y).rotate(tempFOV));
 
-
-    /////// get source point /////
-
-    source = ray1.checkCorners();
-    if (source != null) {
+    src = ray1.checkCorners();
+    if (src != null) {
       //vPoint(i1);
     } else {
-      source = ray1.checkEdges();
+      src = ray1.checkEdges();
     }
 
-
-    /////// get target point //////
-
-    target = ray2.checkCorners();
-    if (target != null) {
+    trg = ray2.checkCorners();
+    if (trg != null) {
       //vPoint(i1);
     } else {
-      target = ray2.checkEdges();
+      trg = ray2.checkEdges();
     }
 
-    // run recursive search, create verts for boundaries;
-    this.bounds.clear();              // every frame we reset the list and build from scratch. is this unnecesary overhead?
+    this.bounds.clear();             
     this.boundaryPoints.clear();
-    this.boundaryPoints.add(source);  // add source (intersection of ray 1 and an edge) as first vert
-    this.recSearch(source);           // recursively find corners until we hit target (intersection of ray 2 and an edge)
-    PVector previousPoint = source;   // for use when loop through
-
-
-    /////// SET THE BOUNDARIES ///////
-
-    // loop through the verteces in boundaryPoints and connect them with boundaries
-    // relies on the points being correctly ordered in the array
+    this.boundaryPoints.add(src);  
+    this.recSearch(src);        
+    PVector previousPoint = src;
 
     for (PVector p : boundaryPoints) {
 
-      if (p!= source) {
+      if (p!= src) {
         LineBoundary l = new LineBoundary(previousPoint, p, 1);
         //l.update(previousPoint, p);
         bounds.add(l);
@@ -103,8 +87,6 @@ class RotatingBoundryController {
       }
     }
 
-    /////// DRAW THINGS FOR DEBUGGING ///////
-
     if (debug) {
       stroke(255);
 
@@ -112,11 +94,11 @@ class RotatingBoundryController {
       bounds.draw();
 
       //draw angles
-      magLine(source, search, 20);
+      magLine(src, sch, 20);
 
-      vPoint(source);
+      vPoint(src);
       stroke(0, 255, 0);
-      vPoint(target);
+      vPoint(trg);
 
       ray1.drawRay();
       ray2.drawRay();
@@ -130,65 +112,51 @@ class RotatingBoundryController {
       }
     }
 
-    ///// DRAW FLOOR ONLY /////  
-
     if (!debug && drawFloor) {
       bounds.draw();
     }
   }
 
 
-  // resursive search function
-  // trace the edges of the screen to find the next vertex for the dynamic boundaries
-
   PVector recSearch(PVector source) {
     PVector search = new PVector();
 
     if (source.x == 0 && source.y >0) {
-      //println("left");
-      search = north;
+      search = n;
     }
     if (source.x < width && source.y ==0) {
-      //println("top");
-      search = east;
+      search = e;
     }
     if (source.x == width && source.y <height) {
-      //println("right");
-      search = south;
+      search = s;
     }
     if (source.x >0 && source.y == height) {
-      //println("bottom");
-      search = west;
+      search = w;
     }
 
-    // is target on search vector
-    if (ipov(target, source, search)) {
-      //yes, return target, draw line
-      //vLine(source, target);
-      boundaryPoints.add(target);
-      return target;
+    if (ipov(trg, source, search)) {
+      boundaryPoints.add(trg);
+      return trg;
     } else {
 
-      // no, search again from next corner
       PVector newSearch;
       PVector newSource = new PVector();
-      if (search == north) {
-        newSearch = east;
+      if (search == n) {
+        newSearch = e;
         newSource = edges.n_w;
       }
-      if (search == east) {
-        newSearch = south;
+      if (search == e) {
+        newSearch = s;
         newSource = edges.n_e;
       }
-      if (search == south) {
-        newSearch = west;
+      if (search == s) {
+        newSearch = w;
         newSource = edges.s_e;
       }
-      if (search == west) {
-        newSearch = north;
+      if (search == w) {
+        newSearch = n;
         newSource = edges.s_w;
       }
-      //vLine(source, newSource);
       boundaryPoints.add(newSource);
       recSearch(newSource);
     }
@@ -211,31 +179,22 @@ class RotatingBoundryController {
 
     PVector checkCorners() {
 
-      //println(edges.n_e);
       if (ipov(edges.n_e, pos, dir)) {
-
         strokeWeight(20);
-        //vPoint(edges.n_e);
         print("ne ");
         return edges.n_e;
       }
       if (ipov(edges.n_w, pos, dir)) {
-
         strokeWeight(20);
-        //vPoint(edges.n_w);
         print("nw ");
         return edges.n_w;
       }
       if (ipov(edges.s_e, pos, dir)) {
-
         strokeWeight(20);
-        //vPoint(edges.s_e);
         return edges.s_e;
       }
       if (ipov(edges.s_w, pos, dir)) {
-
         strokeWeight(20);
-        //vPoint(edges.s_w);
         return edges.s_w;
       }
       return null;
@@ -244,42 +203,30 @@ class RotatingBoundryController {
     PVector checkEdges() {
       PVector a = isIntersecting(edges.north, pos, dir);
       if (a != null) {
-
         if (h) {
           edges.north.draw();
         }
-
-        //vPoint(a);
         return(a);
       }
       PVector b = isIntersecting(edges.east, pos, dir);
       if (b != null) {
-
         if (h) {
           edges.east.draw();
         }
-
-        //vPoint(b);
         return(b);
       }
       PVector c = isIntersecting(edges.south, pos, dir);
       if (c != null) {
-
         if (h) {
           edges.south.draw();
         }
-
-        //vPoint(c);
         return(c);
       }
       PVector d = isIntersecting(edges.west, pos, dir);
       if (d != null) {
-
         if (h) {
           edges.west.draw();
         }
-
-        //vPoint(d);
         return(d);
       }
       return null;
@@ -294,47 +241,34 @@ class RotatingBoundryController {
       }
       float lineMag = 200;
       magLine(pos, dir, lineMag);
-
       textSize(10);
       PVector textPos = PVector.add(pos, PVector.mult(dir, lineMag));
-
       text(dir.x, textPos.x-20, textPos.y);
       text(dir.y, textPos.x+20, textPos.y);
-
     }
 
     void setAngle(PVector a) {
-      //dir = PVector.fromAngle(radians(a));
       dir = a;
     }
   }
 
   PVector isIntersecting(Edge wl, PVector pos, PVector dir) {
 
-    // test if a ray defined by a point and a direction intersects with an edge
-    // return the point of intersection or null
-
     float x1 = wl.pos1.x;      // rename variables to match those of algorithm aka Dan Schiffman 
     float y1 = wl.pos1.y;      // for convenience
     float x2 = wl.pos2.x;
     float y2 = wl.pos2.y;
-
     float x3 = pos.x;
     float y3 = pos.y;
     float x4 = pos.x + dir.x;
     float y4 = pos.y + dir.y;
-
     float den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-
     if (den == 0) {
       return null;
     } else {
-
       float t = ((x1 -x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
       float u = -((x1 - x2) * (y1 -y3) - (y1 - y2) * (x1 - x3)) / den;
-
       if (t > 0 && t < 1 && u > 0) {                        // intersection found
-
         PVector impact = new PVector();
         impact.x = x1 + t * (x2 - x1);
         impact.y = y1 + t * (y2 - y1);
@@ -347,22 +281,15 @@ class RotatingBoundryController {
 
   boolean ipov(PVector point, PVector pos, PVector dir) {
 
-    // point = point we want to test
-    // pos = origin of ray
-    // dir = direction of ray
-
-
     float a = (pos.x - point.x) / dir.x;
     float b = (pos.y - point.y) / dir.y;
 
     if (dir.x == 0) {
-      //println(b); 
       if (b<=0) {
         return point.x == pos.x;
       }
     }
     if (dir.y == 0) {
-      //println(a); 
       if (a<=0) {
         return point.y == pos.y;
       }
@@ -370,7 +297,6 @@ class RotatingBoundryController {
 
 
     if (abs((pos.x - point.x) / dir.x - (pos.y - point.y) / dir.y)<0.01) {
-      //println(a, b);
       if (a <= 0) {
         return true;
       }
