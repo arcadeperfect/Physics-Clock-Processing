@@ -24,7 +24,7 @@ import org.jbox2d.dynamics.*;
 
 boolean drawFloor = true;         // visualise floor
 boolean debug = false;            // various debug visualisations
-boolean mouseControll = false;     // controll gravity direction with mouse
+boolean mouseControll = false;    // controll gravity direction with mouse
 
 float floorBoundaryAngle = 110;   // how wide the floor is, measured as an angle from a point in the center. This can be animated at runtime.
 
@@ -88,8 +88,8 @@ int lifeCount = 0;
 
 void setup() {
 
-  //fullScreen(P3D);
-  size(800, 800, P3D);
+  fullScreen(P3D);
+  //size(800, 800, P3D);
 
   numberFont = createFont("Consolas", 500);   // use any font but the collision boxes for the numbers might not line up
 

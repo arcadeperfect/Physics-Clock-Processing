@@ -1,17 +1,17 @@
 /*
 
-© 2020 Alex Harding
-
-Physics Clock by Alex Harding
-
-www.alexharding.io
-https://hackaday.io/project/176037-concrete-physics-clock
-https://github.com/arcadeperfect/Physics-Clock-Processing
-
-Originally based on Dan Shiffman's "boxes" example for his Box2D wrapper for processing:
-https://github.com/shiffman/Box2D-for-Processing/tree/master/Box2D-for-Processing/dist/box2d_processing/examples/Boxes
-
-*/
+ © 2020 Alex Harding
+ 
+ Physics Clock by Alex Harding
+ 
+ www.alexharding.io
+ https://hackaday.io/project/176037-concrete-physics-clock
+ https://github.com/arcadeperfect/Physics-Clock-Processing
+ 
+ Originally based on Dan Shiffman's "boxes" example for his Box2D wrapper for processing:
+ https://github.com/shiffman/Box2D-for-Processing/tree/master/Box2D-for-Processing/dist/box2d_processing/examples/Boxes
+ 
+ */
 
 
 
@@ -68,6 +68,7 @@ class Number {
     switch(kind) {
 
       case("second"):
+
       value = second();
       colorMode(RGB);
       txtSize = secondSize;
@@ -75,13 +76,11 @@ class Number {
       density = second_density;
       friction = second_friction;
       restitution = second_restitution;
-
       totalLife = 1000*60*60; //seconds last one hour
-
-
       break;
 
       case("minute"):
+
       value = minute();
       txtSize = minuteSize;
       density = minute_density;
@@ -211,8 +210,6 @@ class Number {
     bdy.setAngularVelocity(random(-5, 5));
   }
 
-
-
   void getTextBounds(String txt) {
 
     textFont(numberFont);
@@ -253,47 +250,59 @@ class Number {
   }
 
   void setColours() {
+    float sat;
     switch(kind) {
-      //if (kind=="minute") {
+
+      // second colours
+
+      case("second"):
+      fill(255);
+      break;
+      
+      
+      // minute colours
+
       case("minute"):
       colorMode(HSB);
-      float sat = map(millis()-initMillis, 0, 60000*4, 150, 0);
-      if (sat>255) {
-        sat = 255;
-      }
-      if (sat < 0) { 
-        sat = 0;
-      }
+      
+      // remap age in milliseconds to a descending saturation value
+      // 60000 milis = 1 minute
+      // so it is map(age-in-millis, start age, end age, start saturation, end saturation)
+      // this will fade from start saturation to end saturation over the specified number of millis
+      
+      sat = map(millis()-initMillis, 0, 60000*10, 150, 0); // remap across 4 minutes
+      
+      sat = constrain(sat, 0, 255);
 
       fill(210, sat, 255);
       noStroke();
       colorMode(RGB);
       break;
-      //} else if (kind=="second") {
-      case("second"):
+
+
+      // hour colours
+
+      case("hour"):
+
       colorMode(HSB);
-      //float sat = map(millis()-initMillis, 0, 60000*6, 230, 0);
-      //if (sat>255) {
-      //  sat = 255;
-      //}
-      //if (sat < 0) {
-      //  sat = 0;
-      //}
-      //float sat = 230;
-      ////float hue = 0; 
-      //println(float(millis())/1000.0);
-      //if (hue >= 255.0) {
-      //  hue = 0;
-      //}
-      //previousMillis = millis();
-      //fill(hue, sat, 255);
-      fill(255);
+      
+      // remap age in milliseconds to a descending saturation value
+      // 60000 milis = 1 minute
+      // so it is map(age-in-millis, start age, end age, start saturation, end saturation)
+      // this will fade from start saturation to end saturation over the specified number of millis
+      
+      sat = map(millis()-initMillis, 0, 60000*60*4, 200, 0); // remap across 60*4 minutes   
+      
+      sat = constrain(sat, 0, 255);
+    
+      print("sat ");
+      println(sat);
+      fill(100, sat, 255);
       noStroke();
       colorMode(RGB);
-    default:
-      colorMode(RGB);
-      fill(thisTextColor);
+
       break;
+
     }
   }
 }
