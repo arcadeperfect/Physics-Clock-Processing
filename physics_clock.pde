@@ -132,6 +132,8 @@ void draw() {
 
   background(0);
 
+  println(frameRate);
+
   // We must always step through time!
   box2d.step(1.0/60, 8, 3);
   //box2d.step();
