@@ -1,5 +1,4 @@
-/*
-
+ /*
 © 2020 Alex Harding
 
 Physics Clock by Alex Harding
